@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumería Elegancia</title>
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #444;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #222;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: #444;
+        }
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-details {
+            flex: 2;
+        }
+
+        .product h3 {
+            margin: 0 0 0.5rem;
+            color: #444;
+        }
+
+        .product p {
+            margin: 0.5rem 0;
+        }
+
+        footer {
+            background-color: #222;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Encabezado -->
+    <header>
+        <h1>Perfumería Elegancia</h1>
+        <p>Encuentra tu fragancia ideal</p>
+    </header>
+
+    <!-- Barra de navegación -->
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#novedades">Novedades</a>
+        <a href="#mas-vendidos">Más Vendidos</a>
+        <a href="#contacto">Contacto</a>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <!-- Sección de novedades -->
+        <section id="novedades">
+            <h2 class="section-title">Novedades</h2>
+            <div class="product">
+                <div class="product-details">
+                    <h3>Perfume Frescura Floral</h3>
+                    <p>Una combinación delicada de flores y frutas, perfecta para cualquier ocasión.</p>
+                    <p><strong>Precio:</strong> $120.00</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-details">
+                    <h3>Perfume Aventura Cítrica</h3>
+                    <p>Fragancia refrescante y enérgica con toques cítricos y madera.</p>
+                    <p><strong>Precio:</strong> $95.00</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección más vendidos -->
+        <section id="mas-vendidos">
+            <h2 class="section-title">Más Vendidos</h2>
+            <div class="product">
+                <div class="product-details">
+                    <h3>Perfume Esencia Nocturna</h3>
+                    <p>Aromas intensos y seductores con notas de vainilla y ámbar.</p>
+                    <p><strong>Precio:</strong> $150.00</p>
+                </div>
+            </div>
+            <div class="product">
+                <div class="product-details">
+                    <h3>Perfume Dulce Encanto</h3>
+                    <p>Una fragancia suave y dulce con esencia de caramelo y almizcle.</p>
+                    <p><strong>Precio:</strong> $130.00</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Perfumería Elegancia. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="./app.js"></script>
+</body>
+
+</html>
