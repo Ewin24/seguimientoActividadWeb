@@ -1,9 +1,6 @@
 (() => {
-    const fs = require('fs');
-    const path = require('path');
-
-    const pixel_file_path = path.join(__dirname, 'pixel_interactions.json');
-    let pixel_url_base = "https:\/\/analyticsplusdev.clientify.net\/analytics_plus\/";
+    let localData = JSON.parse(localStorage.getItem("eventData")) || [];
+    let pixel_url_base = "https:\/\/analyticsapiurlexample\/";
     let pixel_key = "gwlB9wHOcGN8NxUi";
     let pixel_exposed_identifier = "analytics";
     let pixel_track_events_children = true;
@@ -89,8 +86,7 @@
                 , _0x1933ae = _0x31a0('0x4');
             return _0x1e1d6c[_0x31a0('0x14')](_0x1933ae) && (_0x1e1d6c = _0x1e1d6c['replace'](_0x31a0('0x4'), '')),
                 _0x1e1d6c;
-        }
-        ;
+        };
 
     var rrwebRecord = function () {
         "use strict";
@@ -3055,7 +3051,6 @@ or you can use record.mirror to access the mirror instance during recording.`;
     let send_data_fetch = async data => {
         try {
             data['url'] = window.location.href;
-
             let request = await fetch(`${pixel_url_base}pixel-track/${pixel_key}`, {
                 method: 'POST',
                 headers: {
@@ -3063,11 +3058,8 @@ or you can use record.mirror to access the mirror instance during recording.`;
                 },
                 body: JSON.stringify(data)
             })
-
             let response = await request.text()
-
             return response == '' ? response : JSON.parse(response);
-
         } catch (error) {
             console.log(`Analytics pixel: ${error}`);
         }
@@ -3079,39 +3071,46 @@ or you can use record.mirror to access the mirror instance during recording.`;
             data['url'] = window.location.href;
 
             navigator.sendBeacon(`${pixel_url_base}pixel-track/${pixel_key}`, JSON.stringify(data));
+            let nuevoObjeto = data;
+            localStorage.setItem("eventData", JSON.stringify([...(JSON.parse(localStorage.getItem("eventData")) || []), nuevoObjeto]));
         } catch (error) {
             console.log(`Analytics pixel: ${error}`);
         }
     };
 
-    // Función para escribir datos en el archivo JSON
-    const write_data_to_file = (data) => {
+    // Función para descargar los datos de localStorage como archivo JSON
+    let download_local_storage_data = () => {
         try {
-            data['url'] = data['url'] || ''; // Si no hay URL, dejar como cadena vacía.
+            // Obtener los datos de localStorage
+            let jsonContent = JSON.stringify(localData, null, 2);
+            // Crear un blob del contenido JSON
+            let blob = new Blob([jsonContent], { type: "application/json" });
+            // Crear un enlace de descarga
+            let link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "records.json";
 
-            // Leer el archivo actual para no sobrescribir
-            let currentData = [];
-            if (fs.existsSync(pixel_file_path)) {
-                const fileContent = fs.readFileSync(pixel_file_path, 'utf8');
-                currentData = JSON.parse(fileContent || '[]');
-            }
+            // Simula la descarga del archivo
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-            // Agregar nuevos datos
-            currentData.push(data);
-
-            // Escribir datos en el archivo
-            fs.writeFileSync(pixel_file_path, JSON.stringify(currentData, null, 2));
-            console.log('Datos escritos correctamente en el archivo JSON.');
+            console.log("Datos descargados como archivo JSON.");
         } catch (error) {
-            console.error(`Error al escribir en el archivo JSON: ${error.message}`);
+            console.error(`Error al descargar el archivo JSON: ${error.message}`);
         }
     };
+
+    //boton para descarga de los datos del localStorage
+    let downloadButton = document.createElement("button");
+    downloadButton.innerText = "Descargar Datos JSON";
+    downloadButton.onclick = download_local_storage_data;
+    document.body.appendChild(downloadButton);
 
     // Simulación de envío de datos (equivalente a send_data_fetch)
     const send_data_to_file = async (data) => {
         try {
             data['url'] = window.location ? window.location.href : 'http://example.com';
-            write_data_to_file(data);
         } catch (error) {
             console.error(`Analytics pixel: ${error}`);
         }
@@ -3121,7 +3120,6 @@ or you can use record.mirror to access the mirror instance during recording.`;
     const send_data_to_file_no_return = (data) => {
         try {
             data['url'] = window.location ? window.location.href : 'http://example.com';
-            write_data_to_file(data);
         } catch (error) {
             console.error(`Analytics pixel: ${error}`);
         }
@@ -3207,33 +3205,29 @@ or you can use record.mirror to access the mirror instance during recording.`;
         get_custom_parameters() {
             /* Check for extra parameters */
             let this_script = document.querySelector(`script[src$="pixel/${pixel_key}"]`);
+            if (this_script === null) {
+                this_script = {
+                    dataset: { customParameters: undefined }
+                }
+            }
 
             if (this_script.dataset.customParameters) {
-
                 try {
                     let custom_parameters = JSON.parse(this_script.dataset.customParameters);
-
                     return custom_parameters;
-
                 } catch (error) {
                     return false;
                 }
-
             } else {
-
                 return false;
-
             }
         }
-
     }
 
     /* Session class */
     class AltumCodeEvents {
-
         /* Create and initiate the class with the proper parameters */
         async initiate() {
-
             this.visitor_uuid = localStorage.getItem(get_dynamic_var('visitor_uuid'));
             this.visitor_session_uuid = localStorage.getItem(get_dynamic_var('visitor_session_uuid'));
 
@@ -3247,19 +3241,15 @@ or you can use record.mirror to access the mirror instance during recording.`;
 
             /* Check if the current page is the first for this session */
             if (!visitor_session_date || (visitor_session_date && date - (new Date(visitor_session_date)) > 30 * 60 * 1000)) {
-
                 /* Generate the session uuid */
                 this.visitor_session_uuid = get_random_id();
                 localStorage.setItem(get_dynamic_var('visitor_session_uuid'), this.visitor_session_uuid);
-
                 /* Emit the landing page event */
                 await this.event_landing_page();
 
             } else {
-
                 /* Emit the pageview event */
                 await this.event_pageview()
-
             }
 
             /* Set the new session date */
@@ -3267,11 +3257,9 @@ or you can use record.mirror to access the mirror instance during recording.`;
 
             /* Expose function to window */
             window[pixel_exposed_identifier] = {
-
                 goal: async (key) => {
                     await this.event_goal_conversion(key);
                 }
-
             };
 
             /* Initiate event handlers */
@@ -3282,15 +3270,11 @@ or you can use record.mirror to access the mirror instance during recording.`;
             /* Goals tracking if needed */
             if (pixel_goals.length) {
                 let current_domain = get_current_url_domain_no_www();
-
                 /* Iterate on all goals and initiate them if needed */
                 for (let goal of pixel_goals) {
-
                     /* Check if goal url matches the current url */
                     if (goal.type == 'pageview' && (goal.url == current_domain || goal.url == 'www.' + current_domain)) {
-
                         await this.event_goal_conversion(goal.key);
-
                     }
                 }
             }
@@ -3303,10 +3287,8 @@ or you can use record.mirror to access the mirror instance during recording.`;
             if (pixel_heatmaps.length) {
                 let device = get_device_type();
                 let current_domain = get_current_url_domain_no_www();
-
                 /* Iterate on all heatmaps and initiate them if needed */
                 for (let heatmap of pixel_heatmaps) {
-
                     //Clientify
                     let urlheat = heatmap.url;
                     let domain_parse = new URL("https://" + current_domain);
@@ -3317,17 +3299,13 @@ or you can use record.mirror to access the mirror instance during recording.`;
                     // if(heatmap.url == current_domain || heatmap.url == 'www.'+current_domain) {
                     if (heatmap.url == current_domain || heatmap.url == 'www.' + current_domain || position != -1) {
                         //End Clientify
-
                         /* If needed, snapshot the page and send the data */
                         if (!heatmap[`snapshot_id_${device}`]) {
-
                             rrwebRecord({
                                 emit: async event => {
                                     events_tracking_initiated = true;
-
                                     /* Push events here */
                                     events.push(event);
-
                                     /* Send the snapshot data */
                                     if (events.length == 2 && events[0].type == 4 && events[1].type == 2) {
                                         /* Send the caught snapshot */
@@ -3810,8 +3788,8 @@ or you can use record.mirror to access the mirror instance during recording.`;
             _0x20fee0 && console[_0x324ef9(0x1e0)](pixel_url_base + ':\x20' + pixel_key_dnt_message),
                 _0x31401f && console[_0x324ef9(0x1e0)](pixel_url_base + ':\x20' + pixel_key_optout_message);
     }, altumcodeprestart = () => {
-            altumcodestart();
-        };
+        altumcodestart();
+    };
     document['readyState'] === _0x26c67e(0x1dc) || document[_0x26c67e(0x1df)] !== _0x26c67e(0x1e7) && !document[_0x26c67e(0x1d7)]['doScroll'] ? altumcodeprestart() : document[_0x26c67e(0x1e9)](_0x26c67e(0x1e3), () => {
         altumcodeprestart();
     }
